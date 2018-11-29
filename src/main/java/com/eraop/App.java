@@ -196,8 +196,8 @@ public class App {
                 // 发送邮件通知
                 List<String> attachments = new ArrayList<>();
                 attachments.add(logPath);
-                // sendMailTimer("今日Twitter数据监测结果（" + logName + "）", attachments);
-                sendMail("今日Twitter数据监测结果111111（" + logName + "）", attachments);
+                sendMailTimer("今日Twitter数据监测结果（" + logName + "）", attachments);
+                // sendMail("今日Twitter数据监测结果（" + logName + "）", attachments);
             } else {
                 System.out.println("找不到指定的文件");
             }
@@ -213,25 +213,26 @@ public class App {
      * @param title
      * @param attachments
      */
-//     private static void sendMailTimer(final String title, final List<String> attachments) {
-//         Calendar calendar = Calendar.getInstance();
-//         /*
-//          * 指定触发的时间  9:30
-//          */
-//         calendar.set(Calendar.HOUR_OF_DAY, 9);
-//         calendar.set(Calendar.MINUTE, 30);
-//         calendar.set(Calendar.SECOND, 0);
-//         Date time = calendar.getTime();
-//         Timer timer = new Timer();
-//         timer.schedule(new TimerTask() {
-//             @Override
-//             public void run() {
-//                 System.out.println("邮件开始发送");
-//                 sendMail(title, attachments);
-//             }
-//         }, time);
-//
-//     }
+    private static void sendMailTimer(final String title, final List<String> attachments) {
+        Calendar calendar = Calendar.getInstance();
+        /*
+         * 指定触发的时间  9:30
+         */
+        calendar.set(Calendar.HOUR_OF_DAY, 13);
+        calendar.set(Calendar.MINUTE, 30);
+        calendar.set(Calendar.SECOND, 0);
+        Date time = calendar.getTime();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("邮件开始发送");
+                sendMail(title, attachments);
+            }
+        }, time);
+
+    }
+
     private static void sendMail(String title, List<String> attachments) {
         try {
 
