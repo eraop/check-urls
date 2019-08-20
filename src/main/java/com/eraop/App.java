@@ -29,6 +29,7 @@ public class App {
     private static boolean flag = true;
 
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+8"));
         // 监测文件的完整路径 excel文件路径
         String filePath = System.getProperty("path");
         // filePath = "C:\\Users\\weiyi\\Desktop\\check urls\\test.xlsx";
@@ -216,10 +217,10 @@ public class App {
     private static void sendMailTimer(final String title, final List<String> attachments) {
         Calendar calendar = Calendar.getInstance();
         /*
-         * 指定触发的时间  9:30
+         * 指定触发的时间  9:00
          */
-        calendar.set(Calendar.HOUR_OF_DAY, 13);
-        calendar.set(Calendar.MINUTE, 30);
+        calendar.set(Calendar.HOUR_OF_DAY, 9);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         Date time = calendar.getTime();
         Timer timer = new Timer();
@@ -227,13 +228,22 @@ public class App {
             @Override
             public void run() {
                 System.out.println("邮件开始发送");
-                sendMail(title, attachments);
+                boolean result = sendMail(title, attachments);
+                //失败后10分钟重新发送，再失败则不发送
+                if (!result) {
+                    try {
+                        Thread.sleep(3600 * 10);
+                        sendMail(title, attachments);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }, time);
 
     }
 
-    private static void sendMail(String title, List<String> attachments) {
+    private static boolean sendMail(String title, List<String> attachments) {
         try {
 
             MailAccountInfo accountInfo = new MailAccountInfo();
@@ -241,7 +251,7 @@ public class App {
             accountInfo.setHost("smtp.exmail.qq.com");
             accountInfo.setPort(465);
             accountInfo.setLoginid("weiyi@safefw.com");
-            accountInfo.setPassword("");
+            accountInfo.setPassword("Ve1230..");
             accountInfo.setProtocol("smtp");
             accountInfo.setSsl(true);
             MailMessageInfo msg = new MailMessageInfo();
@@ -264,8 +274,11 @@ public class App {
             sender.connect();
             sender.sendEmail(msg);
             System.out.println("邮件发送成功");
+            return true;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             System.out.println("邮件发送失败");
+            return false;
         }
     }
 
